@@ -2048,10 +2048,8 @@ def lower_sharding_computation(
       any(not is_unspecified(o) for o in out_shardings))
 
   gs = GSPMDSharding.get_replicated(device_assignment)
-  # TODO(yashkatariya): Enable this when the SPMD chooses correct shardings for
-  # shapes indivisible by shard_shape.
-  # if xla_extension_version < 239 or hasattr(backend, "compile_replicated"):
-  in_shardings = tuple(gs if is_unspecified(i) else i for i in in_shardings)
+  if xla_extension_version < 239 or hasattr(backend, "compile_replicated"):
+    in_shardings = tuple(gs if is_unspecified(i) else i for i in in_shardings)
 
   da_object = _create_da_object(tuple(device_assignment))
 
